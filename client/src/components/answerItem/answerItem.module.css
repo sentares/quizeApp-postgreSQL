@@ -1,0 +1,26 @@
+.answer {
+	padding: 10px;
+	font-size: 18px;
+	display: flex;
+	align-items: center;
+	background-color: rgb(182, 222, 209);
+	border-radius: 5px;
+	margin: 6px;
+	color: black;
+	width: 500px;
+	cursor: pointer;
+}
+.answer:hover {
+	background-color: rgba(46, 205, 152, 0.783);
+}
+/* .answer:active {
+	background-color: rgb(133, 133, 207);
+} */
+
+.answerCorrect {
+	background-color: rgb(38, 255, 0);
+}
+
+.answerIncorrect {
+	background-color: red;
+}

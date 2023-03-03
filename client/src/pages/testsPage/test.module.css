@@ -1,0 +1,84 @@
+.testPage {
+	max-width: 800px;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+}
+
+.questionsBlock {
+	position: relative;
+	width: 700px;
+	height: 400px;
+	display: flex;
+	justify-content: center;
+	padding: 20px;
+	border-radius: 10px;
+	background-color: rgba(105, 175, 255, 0.368);
+}
+
+.questions {
+	height: 80px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.question {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+	flex-wrap: wrap;
+	font-size: 26px;
+	text-align: center;
+}
+
+.answersBlock {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+.progressBar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 12px;
+	background-color: #d62957;
+	border-radius: 4px;
+}
+
+.finish {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.textForm {
+	font-size: 24px;
+	margin-bottom: 20px;
+}
+
+.buttonBlock {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.buttonAgain {
+	padding: 10px;
+	border-radius: 5px;
+	background-color: rgb(51, 172, 40);
+	font-size: 20px;
+}
+.buttonAgain:hover {
+	background-color: green;
+}

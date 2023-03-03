@@ -1,0 +1,28 @@
+.home {
+	max-width: 800px;
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 25px;
+}
+
+.testButton {
+	font-size: 24px;
+	padding: 20px;
+	background-color: rgb(17, 166, 17);
+}
+.testButton:hover {
+	background-color: green;
+}
+
+.exitButton {
+	font-size: 24px;
+	padding: 20px;
+	background-color: red;
+}
+.exitButton:hover {
+	background-color: brown;
+}
