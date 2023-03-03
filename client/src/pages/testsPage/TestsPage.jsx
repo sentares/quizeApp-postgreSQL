@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AnswerItem from '../../components/answerItem/AnswerItem'
+import useGetAnswer from '../../hooks/useGetAnswer'
 import useGetQuestions from '../../hooks/useGetQuestions'
 import { useHttp } from '../../hooks/useHttp'
 import styles from './test.module.css'
 
 const TestsPage = () => {
-	const { request } = useHttp()
-	// const [test, setTest] = useState()
-	// const [allTests, setAllTests] = useState([])
-	// const [id_question, setIdQuestion] = useState(1)
-	const [answers, setAnswers] = useState([])
-	const [rightAnswer, setRightAnswer] = useState({})
 	const [isRight, setIsRight] = useState('')
 	const [countRightAnswers, setCountRightAnswers] = useState(0)
 
@@ -24,31 +19,10 @@ const TestsPage = () => {
 		setIdQuestion,
 	} = useGetQuestions()
 
+	const { answers, rightAnswer, getSpecialAnswer, getSpecialRightAnswer } =
+		useGetAnswer(id_question)
+
 	const choseAnswer = useSelector(state => state.answer.choseAnswer)
-
-	// const getQuestions = async () => {
-	// 	const { data } = await request('/tests')
-	// 	setAllTests(data)
-	// 	return
-	// }
-
-	// const getSpecialQuestion = async () => {
-	// 	const { data } = await request(`/tests/special/${id_question}`)
-	// 	setTest(data)
-	// 	return
-	// }
-
-	const getSpecialAnswer = async () => {
-		const { data } = await request(`/tests/special/answers/${id_question}`)
-		setAnswers(data)
-	}
-
-	const getSpecialRightAnswer = async () => {
-		const { data } = await request(
-			`/tests/special/right_answers/${id_question}`
-		)
-		setRightAnswer(data)
-	}
 
 	const nextQuestion = () => {
 		if (id_question < allTests.length) {

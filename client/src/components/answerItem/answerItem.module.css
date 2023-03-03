@@ -20,7 +20,13 @@
 .answerCorrect {
 	background-color: rgb(38, 255, 0);
 }
+.answerCorrect:hover {
+	background-color: rgb(38, 255, 0);
+}
 
 .answerIncorrect {
+	background-color: red;
+}
+.answerIncorrect:hover {
 	background-color: red;
 }
