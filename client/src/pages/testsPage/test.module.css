@@ -90,3 +90,6 @@
 	padding: 10px;
 	font-size: 20px;
 }
+.goHome:hover {
+	background-color: rgb(19, 89, 89);
+}
