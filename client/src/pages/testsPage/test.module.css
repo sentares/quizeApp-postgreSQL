@@ -82,3 +82,11 @@
 .buttonAgain:hover {
 	background-color: green;
 }
+
+.goHome {
+	background-color: rgb(24, 121, 121);
+	position: absolute;
+	top: 50px;
+	padding: 10px;
+	font-size: 20px;
+}

@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 import AnswerItem from '../../components/answerItem/AnswerItem'
 import useGetAnswer from '../../hooks/useGetAnswer'
 import useGetQuestions from '../../hooks/useGetQuestions'
-import { useHttp } from '../../hooks/useHttp'
 import styles from './test.module.css'
+import { Link } from 'react-router-dom'
 
 const TestsPage = () => {
 	const [isRight, setIsRight] = useState('')
@@ -54,16 +54,21 @@ const TestsPage = () => {
 		}
 	}, [id_question, choseAnswer, allTests])
 
-	// const handleRestartTest = () => {
-	// 	setCountRightAnswers(0)
-	// 	setIdQuestion(1)
-	// }
+	const handleRestartTest = () => {
+		setCountRightAnswers(0)
+		setIdQuestion(1)
+	}
 
 	const percentageOfProgress = (id_question / allTests.length) * 100
 	const percentageOfRightAnswer = (countRightAnswers / allTests.length) * 100
 
 	return (
 		<div className={styles.testPage}>
+			<div>
+				<Link to='/'>
+					<button className={styles.goHome}>На главную</button>
+				</Link>
+			</div>
 			<div className={styles.questionsBlock}>
 				{id_question ? (
 					<div className={styles.quest}>
@@ -112,14 +117,14 @@ const TestsPage = () => {
 							<div className={styles.textForm}>
 								Вы прошли тест. Правильных ответов: {percentageOfRightAnswer}%.
 							</div>
-							{/* <div className={styles.buttonBlock}>
+							<div className={styles.buttonBlock}>
 								<button
 									className={styles.buttonAgain}
 									onClick={handleRestartTest}
 								>
 									Пройти снова
 								</button>
-							</div> */}
+							</div>
 						</div>
 					</div>
 				)}
