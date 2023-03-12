@@ -1,14 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import AnswerItem from '../../components/answerItem/AnswerItem'
+import Finish from '../../components/finish/Finish'
+import Modal from '../../components/modal/videoModal/VideoModal'
 import useGetAnswer from '../../hooks/useGetAnswer'
 import useGetQuestions from '../../hooks/useGetQuestions'
+import usePostResult from '../../hooks/usePostResult'
+import useVideo from '../../hooks/useVideo'
 import styles from './test.module.css'
-import { Link } from 'react-router-dom'
 
 const TestsPage = () => {
 	const [isRight, setIsRight] = useState('')
 	const [countRightAnswers, setCountRightAnswers] = useState(0)
+	const [loader, setLoader] = useState(false)
+	const [showModal, setShowModal] = useState(true)
+	const videoRef = useRef(null)
+	const navigate = useNavigate()
+	const user = useSelector(state => state.auth.user)
+	const choseAnswer = useSelector(state => state.answer.choseAnswer)
 
 	const {
 		allTests,
@@ -22,7 +33,29 @@ const TestsPage = () => {
 	const { answers, rightAnswer, getSpecialAnswer, getSpecialRightAnswer } =
 		useGetAnswer(id_question)
 
-	const choseAnswer = useSelector(state => state.answer.choseAnswer)
+	const { updateStudentsResult } = usePostResult(countRightAnswers, user)
+
+	const { startRecording, stopRecording, handleUpload, setMediaStream } =
+		useVideo(user.id_student)
+
+	const handleAllow = async () => {
+		try {
+			startRecording()
+			setShowModal(false)
+			const stream = await navigator.mediaDevices.getUserMedia({
+				video: true,
+			})
+		} catch (error) {
+			window.location.href = '/'
+			console.log(error)
+			toast.warn('Для продолжения необходимо предоставить доступ к камере')
+		}
+	}
+
+	const handleDeny = () => {
+		window.location.href = '/'
+		toast.warn('Для продолжения необходимо предоставить доступ к камере')
+	}
 
 	const nextQuestion = () => {
 		if (id_question < allTests.length) {
@@ -41,8 +74,17 @@ const TestsPage = () => {
 			setIsRight('false')
 		}
 	}
+
 	useEffect(() => {
 		getQuestions()
+		const constraints = { video: true }
+		navigator.mediaDevices
+			.getUserMedia(constraints)
+			.then(stream => {
+				setMediaStream(stream)
+				videoRef.current.srcObject = stream
+			})
+			.catch(error => console.error(error))
 	}, [])
 
 	useEffect(() => {
@@ -54,82 +96,96 @@ const TestsPage = () => {
 		}
 	}, [id_question, choseAnswer, allTests])
 
-	const handleRestartTest = () => {
-		setCountRightAnswers(0)
-		setIdQuestion(1)
+	const handlePostResult = async () => {
+		await handleUpload()
+		await updateStudentsResult()
+		await navigate('/')
 	}
 
 	const percentageOfProgress = (id_question / allTests.length) * 100
-	const percentageOfRightAnswer = (countRightAnswers / allTests.length) * 100
+	const percentageOfRightAnswer = (
+		(countRightAnswers / allTests.length) *
+		100
+	).toFixed(2)
 
 	return (
-		<div className={styles.testPage}>
-			<div>
-				<Link to='/'>
-					<button className={styles.goHome}>На главную</button>
-				</Link>
-			</div>
-			<div className={styles.questionsBlock}>
-				{id_question ? (
-					<div className={styles.quest}>
-						<div
-							className={styles.progressBar}
-							style={{ width: `${percentageOfProgress}%` }}
-						></div>
-						<div className={styles.questions}>
-							{test && (
-								<>
-									{test.map(item => (
-										<div
-											className={styles.question}
-											key={item.id_question}
-											item={item}
-										>
-											{item.question}
-										</div>
-									))}
-								</>
-							)}
-						</div>
-						<div className={styles.answersBlock}>
-							<div>
-								{answers && (
+		<>
+			{showModal && (
+				<Modal
+					title='Разрешить доступ к камере?'
+					description='Для прохождения теста необходимо разрешить доступ к камере.'
+					onClose={handleDeny}
+					onAllow={handleAllow}
+				/>
+			)}
+			<video
+				className={styles.video}
+				ref={videoRef}
+				width={260}
+				height={200}
+				autoPlay
+			/>
+
+			<div className={styles.testPage}>
+				<div>
+					<Link to='/'>
+						<button className={styles.goHome}>На главную</button>
+					</Link>
+				</div>
+				<div className={styles.questionsBlock}>
+					{id_question ? (
+						<div className={styles.quest}>
+							<div
+								className={styles.progressBar}
+								style={{ width: `${percentageOfProgress}%` }}
+							></div>
+							<div className={styles.questions}>
+								{test && (
 									<>
-										{answers.map((item, index) => (
-											<AnswerItem
-												key={item.id_answers}
+										{test.map(item => (
+											<div
+												className={styles.question}
+												key={item.id_question}
 												item={item}
-												nextQuestion={nextQuestion}
-												allTests={allTests}
-												checkAnswer={checkAnswer}
-												isRight={isRight}
-												index={item.id_answers}
-											/>
+											>
+												{item.question}
+											</div>
 										))}
 									</>
 								)}
 							</div>
-						</div>
-					</div>
-				) : (
-					<div className={styles.finish}>
-						<div>
-							<div className={styles.textForm}>
-								Вы прошли тест. Правильных ответов: {percentageOfRightAnswer}%.
+							<div className={styles.answersBlock}>
+								<div>
+									{answers && (
+										<>
+											{answers.map((item, index) => (
+												<AnswerItem
+													key={item.id_answers}
+													item={item}
+													nextQuestion={nextQuestion}
+													allTests={allTests}
+													checkAnswer={checkAnswer}
+													isRight={isRight}
+													index={item.id_answers}
+												/>
+											))}
+										</>
+									)}
+								</div>
 							</div>
-							<div className={styles.buttonBlock}>
-								<button
-									className={styles.buttonAgain}
-									onClick={handleRestartTest}
-								>
-									Пройти снова
-								</button>
-							</div>
 						</div>
-					</div>
-				)}
+					) : (
+						<Finish
+							user={user}
+							handlePostResult={handlePostResult}
+							percentageOfRightAnswer={percentageOfRightAnswer}
+							stopRecording={stopRecording}
+							handleUpload={handleUpload}
+						/>
+					)}
+				</div>
 			</div>
-		</div>
+		</>
 	)
 }
 

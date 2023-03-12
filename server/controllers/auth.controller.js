@@ -20,7 +20,7 @@ class AuthController {
 				})
 			}
 
-			const { name, password, login, id_student } = await rows[0]
+			const { name, password, login, id_student, is_admin } = await rows[0]
 
 			const isPassword = await bcrypt.compare(data.password, password)
 
@@ -34,7 +34,7 @@ class AuthController {
 			}
 
 			const token = jwt.sign(
-				{ name, login, id_student },
+				{ name, login, id_student, is_admin },
 				process.env.SECRET_KEY
 			)
 
@@ -47,7 +47,7 @@ class AuthController {
 				.json({
 					message: 'Авторизация прошла успешно',
 					type: 'success',
-					data: { name, login, id_student },
+					data: { name, login, id_student, is_admin },
 					accessToken: token,
 				})
 		} catch (e) {
@@ -117,7 +117,7 @@ class AuthController {
 				})
 			}
 
-			const { name, login, id_student } = jwt.verify(
+			const { name, login, id_student, is_admin } = jwt.verify(
 				token,
 				process.env.SECRET_KEY
 			)
@@ -125,7 +125,7 @@ class AuthController {
 			res.status(202).json({
 				message: 'Вы авторизованы',
 				type: 'success',
-				data: { name, login, id_student },
+				data: { name, login, id_student, is_admin },
 				accessToken: token,
 			})
 		} catch (e) {

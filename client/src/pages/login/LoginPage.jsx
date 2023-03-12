@@ -32,9 +32,7 @@ const LoginPage = () => {
 			toast[type](message)
 			if (accessToken.length) {
 				getData(data)
-				console.log(data)
 			}
-
 			return
 		}
 		toast.warn('Заполните пустые поля')

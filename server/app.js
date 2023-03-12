@@ -5,6 +5,7 @@ const logger = require('morgan')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const path = require('path')
+const multer = require('multer')
 
 const app = express()
 const PORT = process.env.PORT

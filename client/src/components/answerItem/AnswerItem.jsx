@@ -10,8 +10,8 @@ const AnswerItem = ({ item, nextQuestion, checkAnswer, isRight }) => {
 
 	const handleClick = () => {
 		dispatch(setChoseAnswer(item.id_answers))
-		nextQuestion()
 		checkAnswer()
+		nextQuestion()
 	}
 
 	const answerClass = classNames(styles.answer, {

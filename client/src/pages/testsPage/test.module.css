@@ -63,8 +63,14 @@
 }
 
 .textForm {
+	gap: 10px;
+	display: flex;
 	font-size: 24px;
 	margin-bottom: 20px;
+}
+
+.userName {
+	font-weight: 700;
 }
 
 .buttonBlock {
@@ -92,4 +98,10 @@
 }
 .goHome:hover {
 	background-color: rgb(19, 89, 89);
+}
+
+.video {
+	position: absolute;
+	top: 0;
+	left: 0;
 }
