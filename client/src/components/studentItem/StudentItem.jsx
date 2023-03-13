@@ -1,10 +1,19 @@
 import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './student.module.css'
 
 const StudentItem = ({ student }) => {
+	const navigate = useNavigate()
 	return (
 		<tr>
-			<td>{student.name}</td>
+			<td>
+				<Link
+					to={`/student/${student.id_student}`}
+					style={{ textDecoration: 'none' }}
+				>
+					{student.name}
+				</Link>
+			</td>
 			<td>{student.login}</td>
 			{student.is_done ? (
 				<td className={styles.yes}>да</td>

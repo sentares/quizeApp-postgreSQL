@@ -5,6 +5,7 @@ import AdminPage from './adminPage/AdminPage'
 import HomePage from './homePage/HomePage'
 import LoginPage from './login/LoginPage'
 import RegisterPage from './register/RegisterPage'
+import SpecialStudent from './specialStudent/SpecialStudent'
 import StudentList from './studentList/StudentList'
 import TestsPage from './testsPage/TestsPage'
 
@@ -21,6 +22,7 @@ const Router = () => {
 				<Route path='/' element={<Navigate replace to='/admin' />} />
 				<Route path='/admin' element={<AdminPage />} />
 				<Route path='/check' element={<StudentList />} />
+				<Route path='/student/:id_student' element={<SpecialStudent />} />
 			</Routes>
 		)
 	} else if (isAuth) {

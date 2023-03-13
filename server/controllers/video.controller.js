@@ -31,4 +31,27 @@ function uploadVideo(req, res) {
 	})
 }
 
-module.exports = { uploadVideo }
+function getVideo(req, res) {
+	try {
+		const { id_student } = req.params
+		const videoPath = path.join(__dirname, `uploads/${id_student}`)
+
+		if (fs.existsSync(videoPath)) {
+			const videoFile = fs.readFileSync(videoPath)
+
+			res.writeHead(200, {
+				'Content-Type': 'video.webm',
+				'Content-Length': videoFile.length,
+				'Access-Control-Allow-Origin': 'http://localhost:3000',
+			})
+			res.end(videoFile)
+		} else {
+			res.status(404).send('Файл не найден')
+		}
+	} catch (err) {
+		console.error(err)
+		res.status(500).send('Ошибка сервера')
+	}
+}
+
+module.exports = { uploadVideo, getVideo }
