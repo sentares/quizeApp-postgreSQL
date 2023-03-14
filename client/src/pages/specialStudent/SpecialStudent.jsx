@@ -1,44 +1,44 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { useHttp } from '../../hooks/useHttp'
 import useStudents from '../../hooks/useStudents'
+import useVideo from '../../hooks/useVideo'
+import styles from './special.module.css'
 
 const SpecialStudent = () => {
-	const { request } = useHttp()
 	const params = useParams()
 	const { id_student } = params
 
-	const [videoSrc, setVideoSrc] = useState('')
-
+	const { fetchVideo, videoUrl } = useVideo(id_student)
 	const { fetchStudentData, studentInfo } = useStudents(id_student)
 
-	async function getVideo() {
-		try {
-			const res = await fetch(
-				`http://localhost:4000/api/video/get/${id_student}`
-			)
-			if (res.ok) {
-				const blob = await res.blob()
-				const videoUrl = URL.createObjectURL(blob)
-				setVideoSrc(videoUrl)
-				console.log(res)
-			} else {
-				console.error(`Ошибка загрузки видео: ${res.status}`)
-			}
-		} catch (err) {
-			console.error(`Ошибка загрузки видео: ${err.message}`)
-		}
-	}
-
-	console.log(videoSrc)
 	useEffect(() => {
+		fetchVideo()
 		fetchStudentData()
 	}, [])
 
 	return (
-		<div>
-			<button onClick={getVideo}>Загрузить видео</button>
-			<video src={videoSrc} controls />
+		<div className={styles.special}>
+			<div className={styles.tbl}>
+				<table>
+					<thead>
+						<tr>
+							<th>Имя</th>
+							<th>Логин</th>
+							<th>Результат</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{studentInfo.name}</td>
+							<td>{studentInfo.login}</td>
+							<td>{studentInfo.result}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div>
+				{videoUrl && <video className={styles.video} src={videoUrl} controls />}
+			</div>
 		</div>
 	)
 }

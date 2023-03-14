@@ -1,0 +1,49 @@
+.special {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 50px;
+}
+
+.tbl {
+	width: 100%;
+	display: flex;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+thead {
+	background-color: rgb(70, 70, 70);
+}
+
+th,
+td {
+	padding: 8px;
+	text-align: left;
+}
+
+th {
+	font-weight: bold;
+	border-bottom: 1px solid rgb(94, 94, 94);
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+tr:hover {
+	background-color: #ddd;
+}
+
+.video {
+	width: 100%;
+	height: auto;
+}
+
+.video {
+	width: 440px;
+	height: 340px;
+}

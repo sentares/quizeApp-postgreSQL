@@ -1,21 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import AnswerItem from '../../components/answerItem/AnswerItem'
 import Finish from '../../components/finish/Finish'
+import GoHome from '../../components/goHome/GoHome'
 import Modal from '../../components/modal/videoModal/VideoModal'
 import useGetAnswer from '../../hooks/useGetAnswer'
 import useGetQuestions from '../../hooks/useGetQuestions'
+import usePhoto from '../../hooks/usePhoto'
 import usePostResult from '../../hooks/usePostResult'
 import useVideo from '../../hooks/useVideo'
 import styles from './test.module.css'
 
 const TestsPage = () => {
-	const [isRight, setIsRight] = useState('')
-	const [countRightAnswers, setCountRightAnswers] = useState(0)
-	const [loader, setLoader] = useState(false)
-	const [showModal, setShowModal] = useState(true)
+	const [state, setState] = useState({
+		isRight: '',
+		countRightAnswers: 0,
+		loader: false,
+		showModal: true,
+	})
+	const { isRight, countRightAnswers, loader, showModal } = state
+
 	const videoRef = useRef(null)
 	const navigate = useNavigate()
 	const user = useSelector(state => state.auth.user)
@@ -38,45 +44,62 @@ const TestsPage = () => {
 	const { startRecording, stopRecording, handleUpload, setMediaStream } =
 		useVideo(user.id_student)
 
-	const handleAllow = async () => {
+	const { takeScreenshot, uploadPhoto, isScreenshotReady } = usePhoto(
+		user.id_student
+	)
+
+	const handleAllow = useCallback(async () => {
 		try {
+			setState(prevState => ({ ...prevState, loader: true }))
 			startRecording()
-			setShowModal(false)
+			setState(prevState => ({ ...prevState, showModal: false }))
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: true,
 			})
+			setMediaStream(stream)
+			videoRef.current.srcObject = stream
 		} catch (error) {
-			window.location.href = '/'
 			console.log(error)
 			toast.warn('Для продолжения необходимо предоставить доступ к камере')
+		} finally {
+			setState(prevState => ({ ...prevState, loader: false }))
 		}
-	}
+	}, [startRecording, showModal, setMediaStream])
 
-	const handleDeny = () => {
+	const handleDeny = useCallback(() => {
 		window.location.href = '/'
 		toast.warn('Для продолжения необходимо предоставить доступ к камере')
-	}
+	}, [])
 
-	const nextQuestion = () => {
-		if (id_question < allTests.length) {
-			setIdQuestion(id_question + 1)
-		} else {
-			setIdQuestion(0)
-		}
-	}
+	const nextQuestion = useCallback(() => {
+		setIdQuestion(id_question =>
+			id_question < allTests.length ? id_question + 1 : 0
+		)
+	}, [allTests.length, setIdQuestion])
 
-	const checkAnswer = () => {
-		const id_answers = rightAnswer ? rightAnswer.id_answers : null
+	const id_answers = useMemo(() => rightAnswer?.id_answers, [rightAnswer])
+
+	const checkAnswer = useCallback(() => {
 		if (choseAnswer === id_answers) {
-			setIsRight('true')
-			setCountRightAnswers(count => count + 1)
+			setState(prevState => ({
+				...prevState,
+				isRight: 'true',
+				countRightAnswers: prevState.countRightAnswers + 1,
+			}))
 		} else {
-			setIsRight('false')
+			setState(prevState => ({ ...prevState, isRight: 'false' }))
 		}
-	}
+	}, [choseAnswer, rightAnswer])
+
+	const handlePostResult = useCallback(async () => {
+		await handleUpload()
+		await updateStudentsResult()
+		await navigate('/')
+	}, [handleUpload, updateStudentsResult, navigate])
 
 	useEffect(() => {
 		getQuestions()
+
 		const constraints = { video: true }
 		navigator.mediaDevices
 			.getUserMedia(constraints)
@@ -96,11 +119,13 @@ const TestsPage = () => {
 		}
 	}, [id_question, choseAnswer, allTests])
 
-	const handlePostResult = async () => {
-		await handleUpload()
-		await updateStudentsResult()
-		await navigate('/')
-	}
+	useEffect(() => {
+		const intervalId = setInterval(() => {
+			takeScreenshot()
+			isScreenshotReady && uploadPhoto()
+		}, 5000)
+		return () => clearInterval(intervalId)
+	}, [takeScreenshot, uploadPhoto])
 
 	const percentageOfProgress = (id_question / allTests.length) * 100
 	const percentageOfRightAnswer = (
@@ -127,11 +152,7 @@ const TestsPage = () => {
 			/>
 
 			<div className={styles.testPage}>
-				<div>
-					<Link to='/'>
-						<button className={styles.goHome}>На главную</button>
-					</Link>
-				</div>
+				<GoHome />
 				<div className={styles.questionsBlock}>
 					{id_question ? (
 						<div className={styles.quest}>

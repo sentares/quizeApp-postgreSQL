@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import AdminPage from './adminPage/AdminPage'
 import HomePage from './homePage/HomePage'
 import LoginPage from './login/LoginPage'
+import Photo from './Photo'
 import RegisterPage from './register/RegisterPage'
 import SpecialStudent from './specialStudent/SpecialStudent'
 import StudentList from './studentList/StudentList'
@@ -32,6 +33,7 @@ const Router = () => {
 				<Route path='/register' element={<Navigate replace to='/' />} />
 				<Route path='/' element={<HomePage />} />
 				<Route path='/tests' element={<TestsPage />} />
+				<Route path='/photo' element={<Photo />} />
 			</Routes>
 		)
 	} else {

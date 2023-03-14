@@ -6,6 +6,7 @@ const useVideo = id_student => {
 	const [mediaStream, setMediaStream] = useState(null)
 	const [mediaRecorder, setMediaRecorder] = useState(null)
 	const [chunks, setChunks] = useState([])
+	const [videoUrl, setVideoUrl] = useState('')
 	const { request } = useHttp()
 
 	const startRecording = () => {
@@ -41,11 +42,27 @@ const useVideo = id_student => {
 		}
 	}
 
+	const fetchVideo = async () => {
+		try {
+			const response = await axios.get(
+				`http://localhost:4000/api/video/${id_student}`,
+				{
+					responseType: 'blob',
+				}
+			)
+			setVideoUrl(URL.createObjectURL(response.data))
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
 	return {
 		startRecording,
 		stopRecording,
 		handleUpload,
 		setMediaStream,
+		fetchVideo,
+		videoUrl,
 	}
 }
 

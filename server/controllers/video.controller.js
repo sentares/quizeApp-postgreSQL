@@ -10,47 +10,78 @@ const storage = multer.diskStorage({
 		}
 		cb(null, dir)
 	},
-
 	filename: (req, file, cb) => {
 		const ext = path.extname(file.originalname)
-		cb(null, Date.now() + ext)
+		cb(null, 'video' + ext)
 	},
 })
 
 const upload = multer({ storage })
 
 function uploadVideo(req, res) {
-	upload.single('video')(req, res, err => {
-		if (err instanceof multer.MulterError) {
-			res.status(400).send('Ошибка загрузки видео')
-		} else if (err) {
-			res.status(500).send('Ошибка сервера')
-		} else {
-			res.send('Видео успешно загружено')
-		}
-	})
+	try {
+		upload.single('video')(req, res, err => {
+			if (err instanceof multer.MulterError) {
+				res.status(400).send('Ошибка загрузки видео')
+			} else {
+				res.send('Видео успешно загружено')
+			}
+		})
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({
+			message: 'Ошибка в сервер',
+			type: 'error',
+			data: [],
+		})
+	}
 }
 
 function getVideo(req, res) {
 	try {
-		const { id_student } = req.params
-		const videoPath = path.join(__dirname, `uploads/${id_student}`)
+		const id_student = req.params.id_student
+		const videoPath = path.join(
+			__dirname,
+			`../uploads/${id_student}/video.webm`
+		)
 
-		if (fs.existsSync(videoPath)) {
-			const videoFile = fs.readFileSync(videoPath)
-
-			res.writeHead(200, {
-				'Content-Type': 'video.webm',
-				'Content-Length': videoFile.length,
-				'Access-Control-Allow-Origin': 'http://localhost:3000',
-			})
-			res.end(videoFile)
+		if (!fs.existsSync(videoPath)) {
+			res.status(404).send('Видео не найдено')
 		} else {
-			res.status(404).send('Файл не найден')
+			const stat = fs.statSync(videoPath)
+			const fileSize = stat.size
+			const range = req.headers.range
+
+			if (range) {
+				const parts = range.replace(/bytes=/, '').split('-')
+				const start = parseInt(parts[0], 10)
+				const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1
+				const chunkSize = end - start + 1
+				const file = fs.createReadStream(videoPath, { start, end })
+				const head = {
+					'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+					'Accept-Ranges': 'bytes',
+					'Content-Length': chunkSize,
+					'Content-Type': 'video/webm',
+				}
+				res.writeHead(206, head)
+				file.pipe(res)
+			} else {
+				const head = {
+					'Content-Length': fileSize,
+					'Content-Type': 'video/webm',
+				}
+				res.writeHead(200, head)
+				fs.createReadStream(videoPath).pipe(res)
+			}
 		}
-	} catch (err) {
-		console.error(err)
-		res.status(500).send('Ошибка сервера')
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({
+			message: 'Ошибка в сервер',
+			type: 'error',
+			data: [],
+		})
 	}
 }
 
