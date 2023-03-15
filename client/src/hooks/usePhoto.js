@@ -6,6 +6,7 @@ const usePhoto = id_student => {
 	const [img, setImg] = useState()
 	const [isScreenshotReady, setIsScreenshotReady] = useState(false)
 	const [lastScreenshotTime, setLastScreenshotTime] = useState(null)
+	const [allPhotos, setAllPhotos] = useState(null)
 	const { request } = useHttp()
 
 	const takeScreenshot = async () => {
@@ -27,9 +28,7 @@ const usePhoto = id_student => {
 		if (currentTime - lastScreenshotTime < 5000) {
 			return
 		}
-
 		setLastScreenshotTime(currentTime)
-
 		const formData = new FormData()
 		formData.append('id_student', id_student)
 		formData.append('photos', img, 'screenshot.jpg')
@@ -46,7 +45,12 @@ const usePhoto = id_student => {
 		setIsScreenshotReady(false)
 	}
 
-	return { takeScreenshot, uploadPhoto, isScreenshotReady }
+	const getPhoto = async () => {
+		const { data } = await request(`/photo/${id_student}`)
+		setAllPhotos(data)
+	}
+
+	return { takeScreenshot, uploadPhoto, isScreenshotReady, getPhoto, allPhotos }
 }
 
 export default usePhoto

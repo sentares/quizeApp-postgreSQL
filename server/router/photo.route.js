@@ -1,9 +1,9 @@
 const { Router } = require('express')
-const { uploadPhotos } = require('../controllers/photo.controller')
+const { uploadPhotos, getPhotos } = require('../controllers/photo.controller')
 
 const router = Router()
 
 router.post('/', uploadPhotos)
-router.get('/:id_student')
+router.get('/:id_student', getPhotos)
 
 module.exports = router

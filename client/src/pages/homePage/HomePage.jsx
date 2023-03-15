@@ -50,13 +50,11 @@ const HomePage = () => {
 									Ваш прошлый результат: {percentageResult}%
 								</div>
 								<div className={styles.choseBlock}>
-									<div>
-										{/* <Link to='/tests'> */}
+									{/* <div>
 										<button className={styles.testButton} onClick={handleClick}>
 											Перепройти тест
 										</button>
-										{/* </Link> */}
-									</div>
+									</div> */}
 									<div className={styles.form}>
 										<button className={styles.exitButton} onClick={logout}>
 											Выйти
@@ -68,11 +66,9 @@ const HomePage = () => {
 					) : (
 						<>
 							<div>
-								{/* <Link to='/tests'> */}
 								<button className={styles.testButton} onClick={handleClick}>
 									Пройти тест
 								</button>
-								{/* </Link> */}
 							</div>
 							<div>
 								<button className={styles.exitButton} onClick={logout}>

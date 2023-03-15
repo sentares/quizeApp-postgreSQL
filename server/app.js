@@ -19,12 +19,13 @@ app.use(
 		credentials: true,
 	})
 )
-
 app.use('/api', require('./router/index'))
 
 const publicPath = path.join(__dirname, 'public')
+const uploadsPath = path.join(__dirname, 'uploads')
 
 app.use(express.static(publicPath))
+app.use('/uploads', express.static(uploadsPath))
 
 app.get('*', (req, res) => {
 	res.sendFile(path.join(publicPath, 'index.html'))

@@ -99,7 +99,6 @@ const TestsPage = () => {
 
 	useEffect(() => {
 		getQuestions()
-
 		const constraints = { video: true }
 		navigator.mediaDevices
 			.getUserMedia(constraints)
