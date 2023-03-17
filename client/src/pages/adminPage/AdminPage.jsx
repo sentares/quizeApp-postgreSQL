@@ -44,8 +44,6 @@ const AdminPage = () => {
 		fetchStudentData()
 	}, [setIsLoading])
 
-	console.log('qwewq', user)
-
 	return (
 		<>
 			{isLoading ? (

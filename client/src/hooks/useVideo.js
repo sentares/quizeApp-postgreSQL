@@ -35,8 +35,8 @@ const useVideo = id_student => {
 		const blob = new Blob(chunks, { type: 'video/webm' })
 		formData.append('video', blob, 'video.webm')
 		try {
-			const res = await request('/video', 'POST', formData)
-			console.log(res)
+			const { message } = await request('/video', 'POST', formData)
+			console.log(message)
 		} catch (e) {
 			console.log(e)
 		}

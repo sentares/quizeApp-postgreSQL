@@ -50,11 +50,11 @@ const HomePage = () => {
 									Ваш прошлый результат: {percentageResult}%
 								</div>
 								<div className={styles.choseBlock}>
-									{/* <div>
+									<div>
 										<button className={styles.testButton} onClick={handleClick}>
 											Перепройти тест
 										</button>
-									</div> */}
+									</div>
 									<div className={styles.form}>
 										<button className={styles.exitButton} onClick={logout}>
 											Выйти

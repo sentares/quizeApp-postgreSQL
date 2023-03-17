@@ -25,7 +25,7 @@ const usePhoto = id_student => {
 			return
 		}
 		const currentTime = Date.now()
-		if (currentTime - lastScreenshotTime < 5000) {
+		if (currentTime - lastScreenshotTime < 3000) {
 			return
 		}
 		setLastScreenshotTime(currentTime)

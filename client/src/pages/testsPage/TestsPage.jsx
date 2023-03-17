@@ -21,6 +21,7 @@ const TestsPage = () => {
 		showModal: true,
 	})
 	const { isRight, countRightAnswers, loader, showModal } = state
+	const [isRecording, setIsRecording] = useState(false)
 
 	const videoRef = useRef(null)
 	const navigate = useNavigate()
@@ -58,6 +59,7 @@ const TestsPage = () => {
 			})
 			setMediaStream(stream)
 			videoRef.current.srcObject = stream
+			setIsRecording(true)
 		} catch (error) {
 			console.log(error)
 			toast.warn('Для продолжения необходимо предоставить доступ к камере')
@@ -67,7 +69,7 @@ const TestsPage = () => {
 	}, [startRecording, showModal, setMediaStream])
 
 	const handleDeny = useCallback(() => {
-		window.location.href = '/'
+		// window.location.href = '/'
 		toast.warn('Для продолжения необходимо предоставить доступ к камере')
 	}, [])
 
@@ -97,16 +99,20 @@ const TestsPage = () => {
 		await navigate('/')
 	}, [handleUpload, updateStudentsResult, navigate])
 
+	const streamOn = async () => {
+		try {
+			const constraints = { video: true }
+			const stream = await navigator.mediaDevices.getUserMedia(constraints)
+			setMediaStream(stream)
+			videoRef.current.srcObject = stream
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
 	useEffect(() => {
 		getQuestions()
-		const constraints = { video: true }
-		navigator.mediaDevices
-			.getUserMedia(constraints)
-			.then(stream => {
-				setMediaStream(stream)
-				videoRef.current.srcObject = stream
-			})
-			.catch(error => console.error(error))
+		streamOn()
 	}, [])
 
 	useEffect(() => {
@@ -119,12 +125,15 @@ const TestsPage = () => {
 	}, [id_question, choseAnswer, allTests])
 
 	useEffect(() => {
-		const intervalId = setInterval(() => {
-			takeScreenshot()
-			isScreenshotReady && uploadPhoto()
-		}, 5000)
+		let intervalId
+		if (isRecording) {
+			intervalId = setInterval(() => {
+				takeScreenshot()
+				isScreenshotReady && uploadPhoto()
+			}, 3000)
+		}
 		return () => clearInterval(intervalId)
-	}, [takeScreenshot, uploadPhoto])
+	}, [isRecording, takeScreenshot, uploadPhoto])
 
 	const percentageOfProgress = (id_question / allTests.length) * 100
 	const percentageOfRightAnswer = (

@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { answerSlice } from './slices/answerSlice'
 import { authSlice } from './slices/authSlice'
-import { modalSlice } from './slices/modalSlice'
 import { resultSlice } from './slices/resultSlice'
 
 export const store = configureStore({
@@ -9,6 +8,5 @@ export const store = configureStore({
 		auth: authSlice.reducer,
 		answer: answerSlice.reducer,
 		is_done: resultSlice.reducer,
-		modal: modalSlice.reducer,
 	},
 })

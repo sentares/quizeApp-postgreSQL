@@ -22,9 +22,17 @@ function uploadVideo(req, res) {
 	try {
 		upload.single('video')(req, res, err => {
 			if (err instanceof multer.MulterError) {
-				res.status(400).send('Ошибка загрузки видео')
+				res.status(400).json({
+					message: 'Ошибка загрузки видео',
+					type: 'error',
+					data: [],
+				})
 			} else {
-				res.send('Видео успешно загружено')
+				res.status(200).json({
+					message: 'Видео успешно загружено',
+					type: 'success',
+					data: [],
+				})
 			}
 		})
 	} catch (error) {
@@ -46,7 +54,11 @@ function getVideo(req, res) {
 		)
 
 		if (!fs.existsSync(videoPath)) {
-			res.status(404).send('Видео не найдено')
+			res.status(400).json({
+				message: 'Видео не найдено',
+				type: 'error',
+				data: [],
+			})
 		} else {
 			const stat = fs.statSync(videoPath)
 			const fileSize = stat.size
