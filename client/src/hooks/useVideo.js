@@ -9,6 +9,16 @@ const useVideo = id_student => {
 	const [videoUrl, setVideoUrl] = useState('')
 	const { request } = useHttp()
 
+	const streamOn = async () => {
+		try {
+			const constraints = { video: true }
+			const stream = await navigator.mediaDevices.getUserMedia(constraints)
+			setMediaStream(stream)
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
 	const startRecording = () => {
 		const recorder = new MediaRecorder(mediaStream, {
 			mimeType: 'video/webm',
@@ -62,6 +72,7 @@ const useVideo = id_student => {
 		handleUpload,
 		setMediaStream,
 		fetchVideo,
+		streamOn,
 		videoUrl,
 	}
 }

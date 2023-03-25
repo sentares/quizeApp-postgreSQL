@@ -8,8 +8,8 @@ import GoHome from '../../components/goHome/GoHome'
 import Modal from '../../components/modal/videoModal/VideoModal'
 import useGetAnswer from '../../hooks/useGetAnswer'
 import useGetQuestions from '../../hooks/useGetQuestions'
-import usePhoto from '../../hooks/usePhoto'
 import usePostResult from '../../hooks/usePostResult'
+import useScreen from '../../hooks/useScreen'
 import useVideo from '../../hooks/useVideo'
 import styles from './test.module.css'
 
@@ -21,8 +21,6 @@ const TestsPage = () => {
 		showModal: true,
 	})
 	const { isRight, countRightAnswers, loader, showModal } = state
-	const [isRecording, setIsRecording] = useState(false)
-
 	const videoRef = useRef(null)
 	const navigate = useNavigate()
 	const user = useSelector(state => state.auth.user)
@@ -42,10 +40,15 @@ const TestsPage = () => {
 
 	const { updateStudentsResult } = usePostResult(countRightAnswers, user)
 
-	const { startRecording, stopRecording, handleUpload, setMediaStream } =
-		useVideo(user.id_student)
+	const {
+		startRecording,
+		stopRecording,
+		handleUpload,
+		setMediaStream,
+		streamOn,
+	} = useVideo(user.id_student)
 
-	const { takeScreenshot, uploadPhoto, isScreenshotReady } = usePhoto(
+	const { screenOn, startScreen, stopScreen, handleUploadScreen } = useScreen(
 		user.id_student
 	)
 
@@ -53,13 +56,13 @@ const TestsPage = () => {
 		try {
 			setState(prevState => ({ ...prevState, loader: true }))
 			startRecording()
+			startScreen()
 			setState(prevState => ({ ...prevState, showModal: false }))
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: true,
 			})
 			setMediaStream(stream)
 			videoRef.current.srcObject = stream
-			setIsRecording(true)
 		} catch (error) {
 			console.log(error)
 			toast.warn('Для продолжения необходимо предоставить доступ к камере')
@@ -69,7 +72,6 @@ const TestsPage = () => {
 	}, [startRecording, showModal, setMediaStream])
 
 	const handleDeny = useCallback(() => {
-		// window.location.href = '/'
 		toast.warn('Для продолжения необходимо предоставить доступ к камере')
 	}, [])
 
@@ -95,24 +97,15 @@ const TestsPage = () => {
 
 	const handlePostResult = useCallback(async () => {
 		await handleUpload()
+		await handleUploadScreen()
 		await updateStudentsResult()
 		await navigate('/')
 	}, [handleUpload, updateStudentsResult, navigate])
 
-	const streamOn = async () => {
-		try {
-			const constraints = { video: true }
-			const stream = await navigator.mediaDevices.getUserMedia(constraints)
-			setMediaStream(stream)
-			videoRef.current.srcObject = stream
-		} catch (error) {
-			console.error(error)
-		}
-	}
-
 	useEffect(() => {
 		getQuestions()
 		streamOn()
+		screenOn()
 	}, [])
 
 	useEffect(() => {
@@ -123,17 +116,6 @@ const TestsPage = () => {
 			checkAnswer()
 		}
 	}, [id_question, choseAnswer, allTests])
-
-	useEffect(() => {
-		let intervalId
-		if (isRecording) {
-			intervalId = setInterval(() => {
-				takeScreenshot()
-				isScreenshotReady && uploadPhoto()
-			}, 3000)
-		}
-		return () => clearInterval(intervalId)
-	}, [isRecording, takeScreenshot, uploadPhoto])
 
 	const percentageOfProgress = (id_question / allTests.length) * 100
 	const percentageOfRightAnswer = (
@@ -158,7 +140,6 @@ const TestsPage = () => {
 				height={200}
 				autoPlay
 			/>
-
 			<div className={styles.testPage}>
 				<GoHome />
 				<div className={styles.questionsBlock}>
@@ -209,6 +190,7 @@ const TestsPage = () => {
 							handlePostResult={handlePostResult}
 							percentageOfRightAnswer={percentageOfRightAnswer}
 							stopRecording={stopRecording}
+							stopScreen={stopScreen}
 							handleUpload={handleUpload}
 						/>
 					)}

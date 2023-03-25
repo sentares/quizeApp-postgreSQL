@@ -1,14 +1,13 @@
-import Router from './pages/Router'
-import { ToastContainer } from 'react-toastify'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { ToastContainer } from 'react-toastify'
 import { useHttp } from './hooks/useHttp'
-import { useEffect, useState } from 'react'
-import { setUser, setLoader, setIsAuth } from './redux/slices/authSlice'
+import Router from './pages/Router'
+import { setIsAuth, setLoader, setUser } from './redux/slices/authSlice'
 
 function App() {
 	const { request } = useHttp()
 	const loader = useSelector(state => state.auth.loader)
-
 	const dispath = useDispatch()
 
 	const checkAuth = async () => {

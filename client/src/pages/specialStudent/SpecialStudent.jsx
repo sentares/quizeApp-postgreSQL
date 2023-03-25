@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import usePhoto from '../../hooks/usePhoto'
 import useStudents from '../../hooks/useStudents'
 import useVideo from '../../hooks/useVideo'
+import useScreen from '../../hooks/useScreen'
 import styles from './special.module.css'
 
 const SpecialStudent = () => {
@@ -10,13 +10,13 @@ const SpecialStudent = () => {
 	const { id_student } = params
 
 	const { fetchVideo, videoUrl } = useVideo(id_student)
+	const { fetchScreen, screenUrl } = useScreen(id_student)
 	const { fetchStudentData, studentInfo } = useStudents(id_student)
-	const { getPhoto, allPhotos } = usePhoto(id_student)
 
 	useEffect(() => {
 		fetchVideo()
+		fetchScreen()
 		fetchStudentData()
-		getPhoto()
 	}, [])
 
 	return (
@@ -44,23 +44,49 @@ const SpecialStudent = () => {
 					{videoUrl && (
 						<video className={styles.video} src={videoUrl} controls />
 					)}
+					{screenUrl && (
+						<video className={styles.video} src={screenUrl} controls />
+					)}
 				</div>
 			</div>
 			<div>
-				<h3>Фотографии студента</h3>
-				{allPhotos && (
+				{/* <h3>Запись экрана студента</h3> */}
+
+				{/* {allPhotos && (
 					<ul>
-						{allPhotos.map(photo => (
-							<li key={photo.name}>
+						{allPhotos.map(photo => {
+							const timestamp = parseInt(photo.name.match(/-(\d+)\./)[1])
+							const date = new Date(timestamp)
+
+							return (
+								<li key={photo.name} onClick={() => handlePhotoClick(photo)}>
+									<div>
+										<img
+											className={styles.photo}
+											src={`http://localhost:4000/uploads/${id_student}/photo/${photo.name}`}
+											alt={photo.name}
+										/>
+									</div>
+									<div className={styles.time}>
+										<div>{date.toLocaleDateString()}</div>
+										<div>{date.toLocaleTimeString()}</div>
+									</div>
+								</li>
+							)
+						})}
+						{fullscreenPhoto && (
+							<div
+								className={styles.fullscreen}
+								onClick={handleCloseFullscreen}
+							>
 								<img
-									className={styles.photo}
-									src={`http://localhost:4000/uploads/${id_student}/photo/${photo.name}`}
-									alt={photo.name}
+									src={`http://localhost:4000/uploads/${id_student}/photo/${fullscreenPhoto.name}`}
+									alt={fullscreenPhoto.name}
 								/>
-							</li>
-						))}
+							</div>
+						)}
 					</ul>
-				)}
+				)} */}
 			</div>
 		</>
 	)
