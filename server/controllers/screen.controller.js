@@ -1,6 +1,7 @@
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
+const ffmpeg = require('fluent-ffmpeg')
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
@@ -18,6 +19,23 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
+function extractFrames(videoPath, outputPath, intervalSeconds) {
+	return new Promise((resolve, reject) => {
+		const command = ffmpeg(videoPath)
+			.on('error', err => reject(err))
+			.on('end', () => resolve())
+
+		// const date = new Date().toISOString().replace(/:/g, '-')
+		const date = Date.now()
+		const outputFilename = path.join(outputPath, `frame-${date}-%d.jpeg`)
+
+		command
+			.output(outputFilename)
+			.outputOptions([`-vf fps=1/${intervalSeconds}`])
+			.run()
+	})
+}
+
 function uploadScreen(req, res) {
 	try {
 		upload.single('video')(req, res, err => {
@@ -27,16 +45,42 @@ function uploadScreen(req, res) {
 					type: 'error',
 					data: [],
 				})
-			} else {
-				res.status(200).json({
-					message: 'Видео успешно загружено',
-					type: 'success',
+			} else if (err) {
+				console.error(err)
+				res.status(500).json({
+					message: 'Ошибка в сервер',
+					type: 'error',
 					data: [],
 				})
+			} else {
+				const videoPath = req.file.path
+				const framesPath = path.join(path.dirname(videoPath), 'frames')
+				const intervalSeconds = 7
+
+				if (!fs.existsSync(framesPath)) {
+					fs.mkdirSync(framesPath)
+				}
+
+				extractFrames(videoPath, framesPath, intervalSeconds)
+					.then(() => {
+						res.status(200).json({
+							message: 'Видео успешно загружено и обработано',
+							type: 'success',
+							data: [],
+						})
+					})
+					.catch(err => {
+						console.error(`Ошибка извлечения кадров: ${err.message}`)
+						res.status(500).json({
+							message: 'Ошибка в сервер',
+							type: 'error',
+							data: [],
+						})
+					})
 			}
 		})
 	} catch (error) {
-		console.log(error)
+		console.error(error)
 		res.status(500).json({
 			message: 'Ошибка в сервер',
 			type: 'error',
@@ -97,4 +141,39 @@ function getScreen(req, res) {
 	}
 }
 
-module.exports = { uploadScreen, getScreen }
+function getScreenshots(req, res) {
+	try {
+		const { id_student } = req.params
+		const photosDir = `uploads/${id_student}/screen/frames`
+		if (!fs.existsSync(photosDir)) {
+			return res.status(404).json({ message: 'Фотографии не найдены' })
+		}
+		fs.readdir(photosDir, (err, files) => {
+			if (err) {
+				res.status(500).json({
+					message: 'Ошибка чтения дериктории',
+					type: 'error',
+					data: [],
+				})
+			}
+			const photos = files.map(file => ({
+				name: file,
+				url: `/uploads/${id_student}/screen/frames/${file}`,
+			}))
+			res.status(200).json({
+				message: 'Фотографии успешно загружены',
+				type: 'success',
+				data: photos,
+			})
+		})
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({
+			message: 'Ошибка в сервер',
+			type: 'error',
+			data: [],
+		})
+	}
+}
+
+module.exports = { uploadScreen, getScreen, getScreenshots }

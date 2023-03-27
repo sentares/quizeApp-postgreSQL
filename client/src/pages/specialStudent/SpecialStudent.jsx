@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import useStudents from '../../hooks/useStudents'
 import useVideo from '../../hooks/useVideo'
@@ -6,18 +6,30 @@ import useScreen from '../../hooks/useScreen'
 import styles from './special.module.css'
 
 const SpecialStudent = () => {
+	const [fullscreenPhoto, setFullscreenPhoto] = useState(null)
 	const params = useParams()
 	const { id_student } = params
-
 	const { fetchVideo, videoUrl } = useVideo(id_student)
-	const { fetchScreen, screenUrl } = useScreen(id_student)
 	const { fetchStudentData, studentInfo } = useStudents(id_student)
+	const { fetchScreen, screenUrl, getScreenshots, allPhotos } =
+		useScreen(id_student)
 
 	useEffect(() => {
 		fetchVideo()
 		fetchScreen()
+		getScreenshots()
 		fetchStudentData()
 	}, [])
+
+	const handlePhotoClick = photo => {
+		setFullscreenPhoto(photo)
+	}
+
+	const handleCloseFullscreen = () => {
+		setFullscreenPhoto(null)
+	}
+
+	console.log(allPhotos)
 
 	return (
 		<>
@@ -50,26 +62,26 @@ const SpecialStudent = () => {
 				</div>
 			</div>
 			<div>
-				{/* <h3>Запись экрана студента</h3> */}
+				<h3>Запись экрана студента</h3>
 
-				{/* {allPhotos && (
+				{allPhotos && (
 					<ul>
 						{allPhotos.map(photo => {
-							const timestamp = parseInt(photo.name.match(/-(\d+)\./)[1])
-							const date = new Date(timestamp)
+							// const timestamp = parseInt(photo.name.match(/-(\d+)\./)[1])
+							// const date = new Date(timestamp)
 
 							return (
 								<li key={photo.name} onClick={() => handlePhotoClick(photo)}>
 									<div>
 										<img
 											className={styles.photo}
-											src={`http://localhost:4000/uploads/${id_student}/photo/${photo.name}`}
+											src={`http://localhost:4000/uploads/${id_student}/screen/frames/${photo.name}`}
 											alt={photo.name}
 										/>
 									</div>
 									<div className={styles.time}>
-										<div>{date.toLocaleDateString()}</div>
-										<div>{date.toLocaleTimeString()}</div>
+										{/* <div>{date.toLocaleDateString()}</div>
+										<div>{date.toLocaleTimeString()}</div> */}
 									</div>
 								</li>
 							)
@@ -80,13 +92,13 @@ const SpecialStudent = () => {
 								onClick={handleCloseFullscreen}
 							>
 								<img
-									src={`http://localhost:4000/uploads/${id_student}/photo/${fullscreenPhoto.name}`}
+									src={`http://localhost:4000/uploads/${id_student}/screen/frames/${fullscreenPhoto.name}`}
 									alt={fullscreenPhoto.name}
 								/>
 							</div>
 						)}
 					</ul>
-				)} */}
+				)}
 			</div>
 		</>
 	)

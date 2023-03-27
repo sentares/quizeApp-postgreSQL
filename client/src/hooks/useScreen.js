@@ -7,6 +7,7 @@ const useScreen = id_student => {
 	const [mediaRecorder, setMediaRecorder] = useState(null)
 	const [chunks, setChunks] = useState([])
 	const [screenUrl, setScreenUrl] = useState('')
+	const [allPhotos, setAllPhotos] = useState(null)
 	const { request } = useHttp()
 
 	const screenOn = async () => {
@@ -71,6 +72,12 @@ const useScreen = id_student => {
 		}
 	}
 
+	const getScreenshots = async () => {
+		const { data } = await request(`/screen/screenshots/${id_student}`)
+		console.log(data)
+		setAllPhotos(data)
+	}
+
 	return {
 		startScreen,
 		stopScreen,
@@ -78,6 +85,8 @@ const useScreen = id_student => {
 		setMediaStream,
 		fetchScreen,
 		screenOn,
+		getScreenshots,
+		allPhotos,
 		screenUrl,
 	}
 }

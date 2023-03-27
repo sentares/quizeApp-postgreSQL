@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHttp } from '../../hooks/useHttp'
 import useStudents from '../../hooks/useStudents'
@@ -6,6 +6,7 @@ import { setIsAuth, setUser } from '../../redux/slices/authSlice'
 import styles from './home.module.css'
 
 const HomePage = () => {
+	const [isMobile, setIsMobile] = useState(false)
 	const dispatch = useDispatch()
 	const { request } = useHttp()
 	const user = useSelector(state => state.auth.user)
@@ -33,10 +34,17 @@ const HomePage = () => {
 		window.location.href = '/tests'
 	}
 
-	React.useEffect(() => {
+	useEffect(() => {
 		fetchStudentData()
 	}, [])
 
+	useEffect(() => {
+		const userAgent = navigator.userAgent.toLowerCase()
+		const isMobileDevice = userAgent.match(/mobile/i)
+		setIsMobile(!!isMobileDevice)
+	}, [])
+
+	console.log(isMobile)
 	return (
 		<>
 			{isLoading ? (
@@ -50,11 +58,11 @@ const HomePage = () => {
 									Ваш прошлый результат: {percentageResult}%
 								</div>
 								<div className={styles.choseBlock}>
-									<div>
+									{/* <div>
 										<button className={styles.testButton} onClick={handleClick}>
 											Перепройти тест
 										</button>
-									</div>
+									</div> */}
 									<div className={styles.form}>
 										<button className={styles.exitButton} onClick={logout}>
 											Выйти
