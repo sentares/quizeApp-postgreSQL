@@ -46,11 +46,11 @@ const TestsPage = () => {
 		handleUpload,
 		setMediaStream,
 		streamOn,
+		streamOff,
 	} = useVideo(user.id_student)
 
-	const { screenOn, startScreen, stopScreen, handleUploadScreen } = useScreen(
-		user.id_student
-	)
+	const { screenOn, startScreen, stopScreen, handleUploadScreen, screenOff } =
+		useScreen(user.id_student)
 
 	const handleAllow = useCallback(async () => {
 		try {
@@ -65,14 +65,18 @@ const TestsPage = () => {
 			videoRef.current.srcObject = stream
 		} catch (error) {
 			console.log(error)
-			toast.warn('Для продолжения необходимо предоставить доступ к камере')
+			toast.warn(
+				'Для продолжения необходимо предоставить доступ к камере и экрану компьютера'
+			)
 		} finally {
 			setState(prevState => ({ ...prevState, loader: false }))
 		}
 	}, [startRecording, showModal, setMediaStream])
 
 	const handleDeny = useCallback(() => {
-		toast.warn('Для продолжения необходимо предоставить доступ к камере')
+		toast.warn(
+			'Для продолжения необходимо предоставить доступ к камере и экрану компьютера'
+		)
 	}, [])
 
 	const nextQuestion = useCallback(() => {
@@ -128,7 +132,7 @@ const TestsPage = () => {
 			{showModal && (
 				<Modal
 					title='Разрешить доступ к камере?'
-					description='Для прохождения теста необходимо разрешить доступ к камере.'
+					description='Для прохождения теста необходимо разрешить доступ к камере. '
 					onClose={handleDeny}
 					onAllow={handleAllow}
 				/>
@@ -192,6 +196,8 @@ const TestsPage = () => {
 							stopRecording={stopRecording}
 							stopScreen={stopScreen}
 							handleUpload={handleUpload}
+							streamOff={streamOff}
+							screenOff={screenOff}
 						/>
 					)}
 				</div>

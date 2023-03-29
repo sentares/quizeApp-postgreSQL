@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 import { useHttp } from './useHttp'
 
 const useScreen = id_student => {
@@ -8,6 +9,7 @@ const useScreen = id_student => {
 	const [chunks, setChunks] = useState([])
 	const [screenUrl, setScreenUrl] = useState('')
 	const [allPhotos, setAllPhotos] = useState(null)
+	const [isDontApplyToShow, setIsDontApplyToShow] = useState(false)
 	const { request } = useHttp()
 
 	const screenOn = async () => {
@@ -15,13 +17,41 @@ const useScreen = id_student => {
 			const stream = await navigator.mediaDevices.getDisplayMedia({
 				video: {
 					mediaSource: 'screen',
-					width: { ideal: 1280 },
-					height: { ideal: 720 },
+					videoSource: 'screen',
+					width: { max: '1920' },
+					height: { max: '1080' },
+					displaySurface: 'monitor',
+					logicalSurface: true,
+					resizeMode: 'crop-and-scale',
+					selfBrowserSurface: 'exclude',
 				},
 			})
+			const arr = stream.getTracks()
+			for (let track of arr) {
+				if (!track.label.includes('screen')) {
+					track.stop()
+					alert('Выберите "Весь экран"')
+					setIsDontApplyToShow(true)
+					if (!isDontApplyToShow) {
+						screenOn()
+					}
+				}
+			}
 			setMediaStream(stream)
 		} catch (error) {
 			console.error(error)
+		}
+	}
+
+	const screenOff = () => {
+		try {
+			if (mediaStream) {
+				mediaStream.getTracks().forEach(track => track.stop())
+				setMediaStream(null)
+				console.log('screenOff')
+			}
+		} catch (e) {
+			console.log(e)
 		}
 	}
 
@@ -86,6 +116,7 @@ const useScreen = id_student => {
 		fetchScreen,
 		screenOn,
 		getScreenshots,
+		screenOff,
 		allPhotos,
 		screenUrl,
 	}

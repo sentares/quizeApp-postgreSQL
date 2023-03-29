@@ -19,6 +19,18 @@ const useVideo = id_student => {
 		}
 	}
 
+	const streamOff = async () => {
+		try {
+			if (mediaStream) {
+				mediaStream.getTracks().forEach(track => track.stop())
+				setMediaStream(null)
+				console.log('streamOff')
+			}
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
 	const startRecording = () => {
 		const recorder = new MediaRecorder(mediaStream, {
 			mimeType: 'video/webm',
@@ -73,6 +85,7 @@ const useVideo = id_student => {
 		setMediaStream,
 		fetchVideo,
 		streamOn,
+		streamOff,
 		videoUrl,
 	}
 }
