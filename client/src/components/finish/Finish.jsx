@@ -6,16 +6,10 @@ const Finish = ({
 	handlePostResult,
 	user,
 	stopRecording,
-	streamOff,
-	screenOff,
-	stopScreen,
 }) => {
 	const [stoped, setStoped] = useState(false)
 	const handleStop = async () => {
 		stopRecording()
-		stopScreen()
-		streamOff()
-		screenOff()
 		setStoped(true)
 	}
 

@@ -44,7 +44,6 @@ const HomePage = () => {
 		setIsMobile(!!isMobileDevice)
 	}, [])
 
-	console.log(isMobile)
 	return (
 		<>
 			{isLoading ? (

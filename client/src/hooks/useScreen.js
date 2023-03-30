@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useState } from 'react'
-import { toast } from 'react-toastify'
+// import { toast } from 'react-toastify'
 import { useHttp } from './useHttp'
 
 const useScreen = id_student => {
@@ -10,6 +10,8 @@ const useScreen = id_student => {
 	const [screenUrl, setScreenUrl] = useState('')
 	const [allPhotos, setAllPhotos] = useState(null)
 	const [isDontApplyToShow, setIsDontApplyToShow] = useState(false)
+	const [isScreenStart, setIsScreenStart] = useState(false)
+	const [isTimeToUpload, setIsTimeToUpload] = useState(false)
 	const { request } = useHttp()
 
 	const screenOn = async () => {
@@ -66,13 +68,18 @@ const useScreen = id_student => {
 		}
 		recorder.start()
 		setMediaRecorder(recorder)
-		console.log('start')
+		setIsScreenStart(true)
+		console.log('startScreen')
 	}
 
 	const stopScreen = () => {
-		mediaRecorder.stop()
-		setMediaRecorder(null)
-		console.log('stop')
+		if (mediaRecorder) {
+			mediaRecorder.stop()
+			setMediaRecorder(null)
+			setIsScreenStart(false)
+			setIsTimeToUpload(true)
+			console.log('stopScreen')
+		}
 	}
 
 	const handleUploadScreen = async () => {
@@ -82,9 +89,23 @@ const useScreen = id_student => {
 		formData.append('video', blob, 'video.webm')
 		try {
 			const { message } = await request('/screen', 'POST', formData)
+			setIsTimeToUpload(false)
+			setChunks([])
 			console.log(message)
+			await startScreen()
 		} catch (e) {
 			console.log(e)
+		}
+	}
+
+	const takeAndUploadScreenshot = async () => {
+		if (isScreenStart) {
+			setTimeout(() => {
+				stopScreen()
+			}, 7000)
+		}
+		if (isTimeToUpload) {
+			handleUploadScreen()
 		}
 	}
 
@@ -117,6 +138,9 @@ const useScreen = id_student => {
 		screenOn,
 		getScreenshots,
 		screenOff,
+		takeAndUploadScreenshot,
+		isTimeToUpload,
+		isScreenStart,
 		allPhotos,
 		screenUrl,
 	}

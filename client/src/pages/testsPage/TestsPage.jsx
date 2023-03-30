@@ -46,37 +46,37 @@ const TestsPage = () => {
 		handleUpload,
 		setMediaStream,
 		streamOn,
-		streamOff,
 	} = useVideo(user.id_student)
 
-	const { screenOn, startScreen, stopScreen, handleUploadScreen, screenOff } =
-		useScreen(user.id_student)
+	const {
+		screenOn,
+		startScreen,
+		isScreenStart,
+		isTimeToUpload,
+		takeAndUploadScreenshot,
+	} = useScreen(user.id_student)
 
 	const handleAllow = useCallback(async () => {
 		try {
 			setState(prevState => ({ ...prevState, loader: true }))
-			startRecording()
-			startScreen()
 			setState(prevState => ({ ...prevState, showModal: false }))
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: true,
 			})
 			setMediaStream(stream)
 			videoRef.current.srcObject = stream
+			startScreen()
+			startRecording()
 		} catch (error) {
 			console.log(error)
-			toast.warn(
-				'Для продолжения необходимо предоставить доступ к камере и экрану компьютера'
-			)
+			toast.warn('Для продолжения необходимо предоставить доступ к камере')
 		} finally {
 			setState(prevState => ({ ...prevState, loader: false }))
 		}
 	}, [startRecording, showModal, setMediaStream])
 
 	const handleDeny = useCallback(() => {
-		toast.warn(
-			'Для продолжения необходимо предоставить доступ к камере и экрану компьютера'
-		)
+		toast.warn('Для продолжения необходимо предоставить доступ к камере')
 	}, [])
 
 	const nextQuestion = useCallback(() => {
@@ -101,7 +101,6 @@ const TestsPage = () => {
 
 	const handlePostResult = useCallback(async () => {
 		await handleUpload()
-		await handleUploadScreen()
 		await updateStudentsResult()
 		await navigate('/')
 	}, [handleUpload, updateStudentsResult, navigate])
@@ -121,6 +120,10 @@ const TestsPage = () => {
 		}
 	}, [id_question, choseAnswer, allTests])
 
+	useEffect(() => {
+		takeAndUploadScreenshot()
+	}, [isScreenStart, isTimeToUpload])
+
 	const percentageOfProgress = (id_question / allTests.length) * 100
 	const percentageOfRightAnswer = (
 		(countRightAnswers / allTests.length) *
@@ -132,7 +135,7 @@ const TestsPage = () => {
 			{showModal && (
 				<Modal
 					title='Разрешить доступ к камере?'
-					description='Для прохождения теста необходимо разрешить доступ к камере. '
+					description='Для прохождения теста необходимо разрешить доступ к камере.'
 					onClose={handleDeny}
 					onAllow={handleAllow}
 				/>
@@ -194,10 +197,7 @@ const TestsPage = () => {
 							handlePostResult={handlePostResult}
 							percentageOfRightAnswer={percentageOfRightAnswer}
 							stopRecording={stopRecording}
-							stopScreen={stopScreen}
 							handleUpload={handleUpload}
-							streamOff={streamOff}
-							screenOff={screenOff}
 						/>
 					)}
 				</div>

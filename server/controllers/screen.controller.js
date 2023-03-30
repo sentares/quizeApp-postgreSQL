@@ -24,8 +24,6 @@ function extractFrames(videoPath, outputPath, intervalSeconds) {
 		const command = ffmpeg(videoPath)
 			.on('error', err => reject(err))
 			.on('end', () => resolve())
-
-		// const date = new Date().toISOString().replace(/:/g, '-')
 		const date = Date.now()
 		const outputFilename = path.join(outputPath, `frame-${date}-%d.jpeg`)
 
@@ -55,7 +53,7 @@ function uploadScreen(req, res) {
 			} else {
 				const videoPath = req.file.path
 				const framesPath = path.join(path.dirname(videoPath), 'frames')
-				const intervalSeconds = 7
+				const intervalSeconds = 6.9
 
 				if (!fs.existsSync(framesPath)) {
 					fs.mkdirSync(framesPath)

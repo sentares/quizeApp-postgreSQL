@@ -56,9 +56,9 @@ const SpecialStudent = () => {
 					{videoUrl && (
 						<video className={styles.video} src={videoUrl} controls />
 					)}
-					{screenUrl && (
+					{/* {screenUrl && (
 						<video className={styles.video} src={screenUrl} controls />
-					)}
+					)} */}
 				</div>
 			</div>
 			<div>
