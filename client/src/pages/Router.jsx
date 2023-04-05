@@ -1,13 +1,15 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import AdminPage from './adminPage/AdminPage'
-import HomePage from './homePage/HomePage'
-import LoginPage from './login/LoginPage'
-import RegisterPage from './register/RegisterPage'
-import SpecialStudent from './specialStudent/SpecialStudent'
-import StudentList from './studentList/StudentList'
-import TestsPage from './testsPage/TestsPage'
+import AdminPage from './Admin/adminPage/AdminPage'
+import CreateQuestion from './Admin/createQusetion/CreateQuestion'
+import LoginPage from './Auth/login/LoginPage'
+import RegisterPage from './Auth/register/RegisterPage'
+import QuestionsPage from './Admin/questionsPage/QuestionsPage'
+import SpecialStudent from './Admin/specialStudent/SpecialStudent'
+import StudentList from './Admin/studentList/StudentList'
+import HomePage from './Student/homePage/HomePage'
+import TestsPage from './Student/testsPage/TestsPage'
 
 const Router = () => {
 	const isAuth = useSelector(state => state.auth.isAuth)
@@ -23,6 +25,8 @@ const Router = () => {
 				<Route path='/admin' element={<AdminPage />} />
 				<Route path='/check' element={<StudentList />} />
 				<Route path='/student/:id_student' element={<SpecialStudent />} />
+				<Route path='/questions' element={<QuestionsPage />} />
+				<Route path='/questions/create' element={<CreateQuestion />} />
 			</Routes>
 		)
 	} else if (isAuth) {

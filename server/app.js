@@ -5,7 +5,6 @@ const logger = require('morgan')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const path = require('path')
-const multer = require('multer')
 
 const app = express()
 const PORT = process.env.PORT
@@ -27,7 +26,6 @@ const uploadsPath = path.join(__dirname, 'uploads')
 
 app.use(express.static(publicPath))
 app.use('/uploads', express.static(uploadsPath))
-
 app.get('*', (req, res) => {
 	res.sendFile(path.join(publicPath, 'index.html'))
 })

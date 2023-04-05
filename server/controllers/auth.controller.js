@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const fs = require('fs')
+const path = require('path')
 const db = require('../db/db')
 
 class AuthController {
@@ -71,7 +73,6 @@ class AuthController {
 					register: false,
 				})
 			}
-
 			const hashPassword = await bcrypt.hash(password, 12)
 
 			const { rows: arrId } = await db.query(
@@ -80,6 +81,15 @@ class AuthController {
 			)
 
 			if (arrId.length) {
+				const uploadsDir = path.join(__dirname, '../uploads')
+				if (!fs.existsSync(uploadsDir)) {
+					fs.mkdirSync(uploadsDir)
+				}
+
+				const studentDir = path.join(uploadsDir, arrId[0].id_student.toString())
+				if (!fs.existsSync(studentDir)) {
+					fs.mkdirSync(studentDir)
+				}
 				return res.status(201).json({
 					message: 'Вы успешно зарегистированы',
 					type: 'success',

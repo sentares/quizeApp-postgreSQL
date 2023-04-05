@@ -112,7 +112,7 @@ const useScreen = id_student => {
 	const fetchScreen = async () => {
 		try {
 			const response = await axios.get(
-				`http://localhost:4000/api/screen/${id_student}`,
+				`http://localhost:443/api/screen/${id_student}`,
 				{
 					responseType: 'blob',
 				}

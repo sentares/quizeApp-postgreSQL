@@ -67,7 +67,7 @@ const useVideo = id_student => {
 	const fetchVideo = async () => {
 		try {
 			const response = await axios.get(
-				`http://localhost:4000/api/video/${id_student}`,
+				`http://localhost:443/api/video/${id_student}`,
 				{
 					responseType: 'blob',
 				}
