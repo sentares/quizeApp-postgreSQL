@@ -9,6 +9,9 @@
 	color: black;
 	width: 500px;
 	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 .answer:hover {
 	background-color: rgba(46, 205, 152, 0.783);
@@ -21,7 +24,7 @@
 	background-color: rgb(38, 255, 0);
 }
 .answerCorrect:hover {
-	background-color: rgb(38, 255, 0);
+	background-color: rgb(37, 224, 4);
 }
 
 .answerIncorrect {
@@ -29,4 +32,15 @@
 }
 .answerIncorrect:hover {
 	background-color: red;
+}
+
+.pen {
+	padding: 3px;
+	font-size: 20px;
+	border-radius: 100%;
+	background-color: antiquewhite;
+	color: black;
+}
+.pen:hover {
+	background-color: rgb(225, 177, 117);
 }

@@ -8,5 +8,6 @@ app.use('/result', require('./result.route'))
 app.use('/checkStudent', require('./check.route'))
 app.use('/video', require('./video.route'))
 app.use('/screen', require('./screen.route'))
+app.use('/edit', require('./edit.route'))
 
 module.exports = app

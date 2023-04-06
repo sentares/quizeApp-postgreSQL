@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useHttp } from './useHttp'
 
-const useGetQuestions = () => {
+const useGetQuestions = chosedQuestion => {
 	const { request } = useHttp()
 	const [allTests, setAllTests] = useState([])
 	const [test, setTest] = useState()
@@ -17,6 +17,11 @@ const useGetQuestions = () => {
 		setTest(data)
 	}
 
+	const getSpecialQuestionForEdit = async () => {
+		const { data } = await request(`/tests/special/${chosedQuestion}`)
+		setTest(data)
+	}
+
 	return {
 		allTests,
 		test,
@@ -24,6 +29,7 @@ const useGetQuestions = () => {
 		getQuestions,
 		setIdQuestion,
 		getSpecialQuestion,
+		getSpecialQuestionForEdit,
 	}
 }
 

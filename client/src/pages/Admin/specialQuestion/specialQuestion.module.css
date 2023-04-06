@@ -1,0 +1,25 @@
+.SpecialQuestion {
+	color: white;
+}
+
+.questionBlock {
+	margin: 6px;
+	width: 500px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px;
+	border-radius: 5px;
+	background-color: gray;
+}
+
+.pen {
+	padding: 3px;
+	font-size: 20px;
+	border-radius: 100%;
+	background-color: antiquewhite;
+	color: black;
+}
+.pen:hover {
+	background-color: rgb(225, 177, 117);
+}

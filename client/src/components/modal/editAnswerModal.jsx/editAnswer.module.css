@@ -1,0 +1,83 @@
+.modal {
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.839);
+	position: fixed;
+	align-items: center;
+	top: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 20;
+}
+
+.content {
+	padding: 20px;
+	border-radius: 12px;
+	background-color: rgb(61, 60, 60);
+	height: 200px;
+	width: 740px;
+}
+
+.close {
+	align-items: flex-start;
+	justify-content: flex-end;
+	display: flex;
+}
+
+.closeIcon {
+	color: white;
+	font-size: 24px;
+	font-weight: 700;
+	padding: 2px;
+	border-radius: 100%;
+}
+.closeIcon:hover {
+	background-color: rgb(200, 60, 60);
+}
+
+.text {
+	width: 100%;
+	margin-top: 5px;
+}
+
+.inputBlock {
+	width: 100%;
+	margin-top: 24px;
+}
+
+.input {
+	padding: 10px;
+	width: 97%;
+}
+
+.buttonBlock {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-top: 30px;
+	gap: 10px;
+}
+
+.save {
+	padding: 10px;
+	background-color: rgb(17, 172, 17);
+	border: 1px;
+}
+
+.unsave {
+	padding: 10px;
+	background-color: rgb(166, 194, 166);
+	border: 1px;
+}
+
+.rightAnswer {
+	padding: 10px;
+	background-color: rgb(225, 231, 67);
+	border: 1px;
+	color: black;
+}
+.rightAnswer:hover {
+	background-color: rgb(255, 187, 0);
+}

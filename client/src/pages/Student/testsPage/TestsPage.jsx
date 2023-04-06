@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-
 import AnswerItem from '../../../components/answerItem/AnswerItem'
 import Finish from '../../../components/finish/Finish'
 import GoHome from '../../../components/goHome/GoHome'
@@ -158,19 +157,7 @@ const TestsPage = () => {
 								style={{ width: `${percentageOfProgress}%` }}
 							></div>
 							<div className={styles.questions}>
-								{test && (
-									<>
-										{test.map(item => (
-											<div
-												className={styles.question}
-												key={item.id_question}
-												item={item}
-											>
-												{item.question}
-											</div>
-										))}
-									</>
-								)}
+								{test && <div className={styles.question}>{test.question}</div>}
 							</div>
 							<div className={styles.answersBlock}>
 								<div>
@@ -185,6 +172,7 @@ const TestsPage = () => {
 													checkAnswer={checkAnswer}
 													isRight={isRight}
 													index={item.id_answers}
+													user={user}
 												/>
 											))}
 										</>

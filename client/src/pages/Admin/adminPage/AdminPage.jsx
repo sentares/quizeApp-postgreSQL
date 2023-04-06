@@ -8,7 +8,7 @@ import styles from './admin.module.css'
 const AdminPage = () => {
 	const dispatch = useDispatch()
 	const { request } = useHttp()
-	const [studentInfo, setStudentInfo] = useState([])
+	// const [studentInfo, setStudentInfo] = useState([])
 	const user = useSelector(state => state.auth.user)
 	const [isLoading, setIsLoading] = useState(false)
 	const navigate = useNavigate()
@@ -29,20 +29,20 @@ const AdminPage = () => {
 		navigate('/')
 	}
 
-	const fetchStudentData = async () => {
-		setIsLoading(true)
-		try {
-			const { data } = await request(`/checkStudent/${id_student}`)
-			setStudentInfo(data)
-		} catch (error) {
-			console.error(error)
-		}
-		setIsLoading(false)
-	}
+	// const fetchStudentData = async () => {
+	// 	setIsLoading(true)
+	// 	try {
+	// 		const { data } = await request(`/checkStudent/${id_student}`)
+	// 		setStudentInfo(data)
+	// 	} catch (error) {
+	// 		console.error(error)
+	// 	}
+	// 	setIsLoading(false)
+	// }
 
-	useEffect(() => {
-		fetchStudentData()
-	}, [setIsLoading])
+	// useEffect(() => {
+	// 	fetchStudentData()
+	// }, [setIsLoading])
 
 	return (
 		<>
