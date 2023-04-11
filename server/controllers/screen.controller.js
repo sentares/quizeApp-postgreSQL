@@ -5,7 +5,7 @@ const ffmpeg = require('fluent-ffmpeg')
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		const dir = `uploads/${req.body.id_student}/screen`
+		const dir = `uploads/students/${req.body.id_student}/screen`
 		if (!fs.existsSync(dir)) {
 			fs.mkdirSync(dir)
 		}
@@ -92,7 +92,7 @@ function getScreen(req, res) {
 		const id_student = req.params.id_student
 		const videoPath = path.join(
 			__dirname,
-			`../uploads/${id_student}/screen/video.webm`
+			`../uploads/students/${id_student}/screen/video.webm`
 		)
 
 		if (!fs.existsSync(videoPath)) {
@@ -142,7 +142,7 @@ function getScreen(req, res) {
 function getScreenshots(req, res) {
 	try {
 		const { id_student } = req.params
-		const photosDir = `uploads/${id_student}/screen/frames`
+		const photosDir = `uploads/students/${id_student}/screen/frames`
 		if (!fs.existsSync(photosDir)) {
 			return res.status(404).json({ message: 'Фотографии не найдены' })
 		}
@@ -156,7 +156,7 @@ function getScreenshots(req, res) {
 			}
 			const photos = files.map(file => ({
 				name: file,
-				url: `/uploads/${id_student}/screen/frames/${file}`,
+				url: `/uploads/students/${id_student}/screen/frames/${file}`,
 			}))
 			res.status(200).json({
 				message: 'Фотографии успешно загружены',

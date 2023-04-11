@@ -38,6 +38,20 @@
 	text-align: center;
 }
 
+.newQuest {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+.createNew {
+	padding: 10px;
+	font-size: 20px;
+	background-color: green;
+}
+.createNew:hover {
+	background-color: rgb(10, 99, 10);
+}
+
 table {
 	border-collapse: collapse;
 }

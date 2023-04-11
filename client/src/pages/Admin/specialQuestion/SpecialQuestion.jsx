@@ -14,16 +14,16 @@ const SpecialQuestion = () => {
 		state => state.editModal.openEditAnswerModal
 	)
 	const params = useParams()
+
 	const { id_question } = params
 	const user = useSelector(state => state.auth.user)
+
 	const chosedQuestion = id_question
 
 	const { getSpecialAnswer, getSpecialRightAnswer, answers, rightAnswer } =
 		useGetAnswer(id_question)
 
 	const { getSpecialQuestionForEdit, test } = useGetQuestions(chosedQuestion)
-
-	// const id_rightAnswer = useMemo(() => rightAnswer?.id_answers, [rightAnswer])
 
 	useEffect(() => {
 		getSpecialQuestionForEdit()
@@ -35,7 +35,6 @@ const SpecialQuestion = () => {
 		console.log('adminClick')
 	}
 	const checkAnswer = () => {}
-
 	const handleModal = () => {
 		setOpenEditModal(true)
 	}
@@ -52,14 +51,26 @@ const SpecialQuestion = () => {
 						<EditQuestionModal
 							getSpecialQuestionForEdit={getSpecialQuestionForEdit}
 							setOpenEditModal={setOpenEditModal}
-							test={test}
+							test={test.question}
+							image_question={test.image}
 						/>
 					)}
-					<div className={styles.questionBlock}>
-						<div className={styles.question}>{test.question}</div>
-						<button onClick={handleModal} className={styles.pen}>
-							<BiPencil />
-						</button>
+					<div className={styles.quest}>
+						<div className={styles.questionBlock}>
+							<div className={styles.question}>{test.question.question}</div>
+							<button onClick={handleModal} className={styles.pen}>
+								<BiPencil />
+							</button>
+						</div>
+						{test.image && (
+							<div className={styles.imageBlock}>
+								<img
+									className={styles.image}
+									src={`http://localhost:443/${test.image.path}`}
+									alt='photo'
+								/>
+							</div>
+						)}
 					</div>
 					<div>
 						{answers && (

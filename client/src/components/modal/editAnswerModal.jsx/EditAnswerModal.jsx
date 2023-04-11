@@ -46,7 +46,7 @@ const EditAnswerModal = ({ rightAnswer }) => {
 			})
 			toast[type](message)
 			dispatch(setOpenEditAnswerModal(false))
-			window.location.reload() // перезагрузить страницу
+			window.location.reload()
 		} catch (e) {
 			console.log(e)
 		}

@@ -16,7 +16,7 @@
 	padding: 20px;
 	border-radius: 12px;
 	background-color: rgb(61, 60, 60);
-	height: 200px;
+	height: 210px;
 	width: 740px;
 }
 
@@ -57,10 +57,69 @@
 	align-items: center;
 	justify-content: flex-end;
 	margin-top: 30px;
+	gap: 10px;
 }
 
 .save {
 	padding: 10px;
-	background-color: rgb(144, 220, 144);
+	background-color: rgb(17, 172, 17);
 	border: 1px;
+}
+
+.unsave {
+	padding: 10px;
+	background-color: rgb(166, 194, 166);
+	border: 1px;
+}
+
+.fileInput {
+	display: none;
+}
+
+.galleryButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	/* margin-right: 16px; */
+	padding: 8px;
+	background-color: #f5f5f5;
+	color: black;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 18px;
+}
+
+.galleryButton:hover {
+	background-color: #b6c6b6;
+}
+.imageBlock {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.selectedImage {
+	max-width: 80px;
+	max-height: 80px;
+	height: auto;
+	margin-top: 10px;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+.selectedImage:hover {
+	background-color: #f5f5f5;
+	transform: scale(1.1);
+	transition: 0.3s;
+}
+
+.closeImage {
+	position: absolute;
+	top: 2px;
+	right: -4px;
+	background-color: gray;
+	padding: 3px;
+	border-radius: 100%;
+	opacity: 0.8;
 }

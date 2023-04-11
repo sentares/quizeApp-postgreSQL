@@ -69,13 +69,12 @@ const SpecialStudent = () => {
 						{allPhotos.map(photo => {
 							// const timestamp = parseInt(photo.name.match(/-(\d+)\./)[1])
 							// const date = new Date(timestamp)
-
 							return (
 								<li key={photo.name} onClick={() => handlePhotoClick(photo)}>
 									<div>
 										<img
 											className={styles.photo}
-											src={`http://localhost:443/uploads/${id_student}/screen/frames/${photo.name}`}
+											src={`http://localhost:443/uploads/students/${id_student}/screen/frames/${photo.name}`}
 											alt={photo.name}
 										/>
 									</div>
@@ -92,7 +91,7 @@ const SpecialStudent = () => {
 								onClick={handleCloseFullscreen}
 							>
 								<img
-									src={`http://localhost:443/uploads/${id_student}/screen/frames/${fullscreenPhoto.name}`}
+									src={`http://localhost:443/uploads/students/${id_student}/screen/frames/${fullscreenPhoto.name}`}
 									alt={fullscreenPhoto.name}
 								/>
 							</div>

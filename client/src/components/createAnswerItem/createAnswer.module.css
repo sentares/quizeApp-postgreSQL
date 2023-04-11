@@ -1,0 +1,35 @@
+.answers {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.answer {
+	width: 70%;
+	padding: 5px;
+	font-size: 18px;
+	display: flex;
+	align-items: center;
+	background-color: rgb(182, 222, 209);
+	border-radius: 5px;
+	color: black;
+	width: 500px;
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border: none;
+}
+.answer:hover {
+	background-color: rgba(46, 205, 152, 0.783);
+}
+
+.checkpoint {
+	padding: 5px;
+	font-size: 26px;
+	color: grey;
+}
+.checkpoint:hover {
+	color: #4caf50;
+}

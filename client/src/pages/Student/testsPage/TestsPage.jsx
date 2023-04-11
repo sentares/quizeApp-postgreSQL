@@ -130,6 +130,9 @@ const TestsPage = () => {
 		100
 	).toFixed(2)
 
+	// console.log(test?.image.path)
+	// console.log(id_question)
+
 	return (
 		<>
 			{showModal && (
@@ -157,7 +160,22 @@ const TestsPage = () => {
 								style={{ width: `${percentageOfProgress}%` }}
 							></div>
 							<div className={styles.questions}>
-								{test && <div className={styles.question}>{test.question}</div>}
+								{test && (
+									<div>
+										<div className={styles.question}>
+											{test.question.question}
+										</div>
+										{test.image && (
+											<div className={styles.imageBlock}>
+												<img
+													className={styles.image}
+													src={`http://localhost:443/${test.image.path}`}
+													alt='photo'
+												/>
+											</div>
+										)}
+									</div>
+								)}
 							</div>
 							<div className={styles.answersBlock}>
 								<div>

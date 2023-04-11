@@ -28,21 +28,42 @@ class TestsController {
 
 			if (!id_question) {
 				return res.status(400).json({
-					message: 'Не указан id поста',
+					message: 'Не указан id вопроса',
 					type: 'error',
 					data: [],
 				})
 			}
 
-			const { rows } = await db.query(
-				'select * from questions where id_question=$1',
-				[id_question]
-			)
+			const questionQuery = 'select * from questions where id_question=$1'
+			const imageQuery = 'select * from image_questions where id_question=$1'
+
+			// Выполняем оба запроса параллельно с помощью Promise.all
+			const [questionResult, imageResult] = await Promise.all([
+				db.query(questionQuery, [id_question]),
+				db.query(imageQuery, [id_question]),
+			])
+
+			const questionRows = questionResult.rows
+			const imageRows = imageResult.rows
+
+			if (questionRows.length === 0) {
+				return res.status(404).json({
+					message: 'Вопрос не найден',
+					type: 'error',
+					data: [],
+				})
+			}
+
+			const questionData = questionRows[0]
+			const imageData = imageRows.length > 0 ? imageRows[0] : null
 
 			res.status(200).json({
 				message: 'Данные успешно получены',
 				type: 'success',
-				data: rows[0],
+				data: {
+					question: questionData,
+					image: imageData,
+				},
 			})
 		} catch (e) {
 			console.log(e)

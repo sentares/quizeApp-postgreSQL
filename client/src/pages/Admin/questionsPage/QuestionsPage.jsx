@@ -1,11 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import GoHome from '../../../components/goHome/GoHome'
 import QuestionItem from '../../../components/questionItem/QuestionItem'
 import useGetQuestions from '../../../hooks/useGetQuestions'
 import styles from './questions.module.css'
 
 const QuestionsPage = () => {
+	const [openNewQuestModal, setOpenNewQuestionModal] = useState(false)
 	const { getQuestions, allTests } = useGetQuestions()
+	const navigate = useNavigate()
+
+	const createNewQuestion = () => {
+		navigate('/create')
+	}
 
 	useEffect(() => {
 		getQuestions()
@@ -14,6 +21,11 @@ const QuestionsPage = () => {
 	return (
 		<div className={styles.QuestionsPage}>
 			<GoHome />
+			<div className={styles.newQuest}>
+				<button className={styles.createNew} onClick={createNewQuestion}>
+					Новый вопрос
+				</button>
+			</div>
 			<div className={styles.list}>Список вопросов</div>
 			<table className={styles.studentTable}>
 				<thead>

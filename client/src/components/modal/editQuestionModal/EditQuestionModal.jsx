@@ -1,17 +1,25 @@
 import React, { useState } from 'react'
-import { useHttp } from '../../../hooks/useHttp'
+import { BsImage } from 'react-icons/bs'
 import { MdOutlineClose } from 'react-icons/md'
-import styles from './editQuestion.module.css'
 import { toast } from 'react-toastify'
+import useEditQuestion from '../../../hooks/useEditQuestion'
+import styles from './editQuestion.module.css'
 
 const EditQuestionModal = ({
 	setOpenEditModal,
 	test,
 	getSpecialQuestionForEdit,
+	image_question,
 }) => {
 	const [question, setTitle] = useState(test.question)
+	const [originalQuestion] = useState(test.question)
+	const [selectedImage, setSelectedImage] = useState(null)
+	const [imageQuestionURL, setImageQuestionUrl] = useState(image_question?.path)
+	const [image, setImage] = useState('')
+	const isQuestionChanged = question !== originalQuestion
 	const { id_question } = test
-	const { request } = useHttp()
+
+	console.log(image_question)
 
 	const changeTitle = e => {
 		e.preventDefault()
@@ -23,17 +31,46 @@ const EditQuestionModal = ({
 		setOpenEditModal(false)
 	}
 
-	const changeQuestionTitle = async (id_question, question) => {
-		const { type, message } = await request(
-			`/edit/question/${id_question}`,
-			'PUT',
-			{ question }
-		)
-		toast[type](message)
-
-		await getSpecialQuestionForEdit()
-		setOpenEditModal(false)
+	const handleCloseImage = () => {
+		setSelectedImage(null)
 	}
+
+	const handleFileChange = e => {
+		setSelectedImage(e.target.files[0])
+		const file = e.target.files[0]
+		const imageUrl = URL.createObjectURL(file)
+		setImage(imageUrl)
+	}
+
+	const { changeQuestionTitle, handleSavePhoto } = useEditQuestion(
+		question,
+		id_question,
+		selectedImage
+	)
+
+	const handleSaveEdits = async () => {
+		try {
+			if (isQuestionChanged && selectedImage) {
+				await changeQuestionTitle()
+				await handleSavePhoto()
+			} else if (isQuestionChanged) {
+				await changeQuestionTitle()
+			} else if (selectedImage) {
+				await handleSavePhoto()
+			}
+			setOpenEditModal(false)
+			getSpecialQuestionForEdit()
+		} catch (e) {
+			toast.error('Ошибка сохранения изменений')
+			console.log(e)
+		}
+	}
+
+	const handleDeleteQuestionImage = async () => {
+		setImageQuestionUrl(null)
+	}
+
+	console.log(selectedImage)
 
 	return (
 		<div className={styles.modal}>
@@ -54,11 +91,60 @@ const EditQuestionModal = ({
 						/>
 					</div>
 					<div className={styles.buttonBlock}>
+						{imageQuestionURL ? (
+							<div className={styles.imageBlock}>
+								<img
+									className={styles.selectedImage}
+									src={`http://localhost:443/${imageQuestionURL}`}
+									alt='photo'
+								/>
+								<button
+									className={styles.closeImage}
+									onClick={handleDeleteQuestionImage}
+								>
+									<MdOutlineClose />
+								</button>
+							</div>
+						) : (
+							<>
+								<input
+									className={styles.fileInput}
+									type='file'
+									onChange={handleFileChange}
+								/>
+								{selectedImage ? (
+									<div className={styles.imageBlock}>
+										<img
+											src={image}
+											alt='Selected image'
+											className={styles.selectedImage}
+										/>
+										<button
+											className={styles.closeImage}
+											onClick={handleCloseImage}
+										>
+											<MdOutlineClose />
+										</button>
+									</div>
+								) : (
+									<button
+										className={styles.galleryButton}
+										onClick={() => {
+											document.querySelector(`.${styles.fileInput}`).click()
+										}}
+									>
+										<BsImage />
+									</button>
+								)}
+							</>
+						)}
+
 						<button
-							className={styles.save}
-							onClick={() => {
-								changeQuestionTitle(id_question, question)
-							}}
+							className={
+								isQuestionChanged || selectedImage ? styles.save : styles.unsave
+							}
+							// disabled={!isQuestionChanged || !selectedImage}
+							onClick={handleSaveEdits}
 						>
 							Сохранить
 						</button>

@@ -4,7 +4,7 @@ const fs = require('fs')
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		const dir = `uploads/${req.body.id_student}`
+		const dir = `uploads/students/${req.body.id_student}`
 		if (!fs.existsSync(dir)) {
 			fs.mkdirSync(dir)
 		}
@@ -50,7 +50,7 @@ function getVideo(req, res) {
 		const id_student = req.params.id_student
 		const videoPath = path.join(
 			__dirname,
-			`../uploads/${id_student}/video.webm`
+			`../uploads/students/${id_student}/video.webm`
 		)
 
 		if (!fs.existsSync(videoPath)) {

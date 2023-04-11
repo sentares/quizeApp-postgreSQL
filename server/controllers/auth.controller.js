@@ -81,7 +81,7 @@ class AuthController {
 			)
 
 			if (arrId.length) {
-				const uploadsDir = path.join(__dirname, '../uploads')
+				const uploadsDir = path.join(__dirname, '../uploads/students')
 				if (!fs.existsSync(uploadsDir)) {
 					fs.mkdirSync(uploadsDir)
 				}

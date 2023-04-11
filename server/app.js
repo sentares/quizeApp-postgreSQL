@@ -19,7 +19,8 @@ app.use(
 	})
 )
 app.use('/api', require('./router/index'))
-app.use('/frames', express.static('uploads/:id_student/screen/frames'))
+app.use('/frames', express.static('uploads/students/:id_student/screen/frames'))
+app.use('/images', express.static('uploads/questions/:id_question'))
 
 const publicPath = path.join(__dirname, 'public')
 const uploadsPath = path.join(__dirname, 'uploads')
