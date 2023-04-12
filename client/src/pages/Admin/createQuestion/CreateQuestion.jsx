@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import CreateAnswerItem from '../../../components/createAnswerItem/CreateAnswerItem'
 import styles from './createQuestion.module.css'
+import { useHttp } from '../../../hooks/useHttp'
 
 const CreateQuestion = () => {
+	const { request } = useHttp()
 	const [question, setQuestion] = useState('')
 	const [options, setOptions] = useState([
 		{ number: 1, text: '', isCorrect: true },
@@ -37,8 +39,17 @@ const CreateQuestion = () => {
 
 	const handleSubmit = async event => {
 		event.preventDefault()
-		// ...
 	}
+
+	const handleCreateQuestion = async () => {
+		const data = await request('/edit/create/question', 'POST', {
+			question,
+			options,
+		})
+		console.log(data)
+	}
+
+	console.log(options)
 
 	return (
 		<div className={styles.create}>
@@ -59,7 +70,9 @@ const CreateQuestion = () => {
 						onCorrectChange={handleCorrectOptionChange}
 					/>
 				))}
-				<button type='submit'>Сохранить</button>
+				<button type='submit' onClick={handleCreateQuestion}>
+					Сохранить
+				</button>
 			</form>
 		</div>
 	)

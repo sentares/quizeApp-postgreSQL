@@ -62,7 +62,7 @@ const RegisterPage = () => {
 					<div className={styles.registerInputs}>
 						<div className={styles.inputBlock}>
 							<input
-								type='text'
+								type='name'
 								name='name'
 								className={styles.registerInput}
 								placeholder='Ваше имя'

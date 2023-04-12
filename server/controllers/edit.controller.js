@@ -122,6 +122,99 @@ class EditController {
 			})
 		}
 	}
+
+	async deleteQuestionImage(req, res) {
+		try {
+			const { id_image } = req.params
+			const image = await db.query(
+				'SELECT * FROM image_questions WHERE id_image = $1',
+				[id_image]
+			)
+			if (image.rows.length === 0) {
+				return res.status(404).json({
+					message: 'Изображение не найдено',
+					type: 'error',
+					data: [],
+				})
+			}
+
+			const filePath = image.rows[0].path
+			fs.unlinkSync(filePath)
+
+			await db.query('DELETE FROM image_questions WHERE id_image = $1', [
+				id_image,
+			])
+
+			res.status(200).json({
+				message: 'Изображение успешно удалено',
+				type: 'success',
+				data: [],
+			})
+		} catch (e) {
+			console.log(e)
+			res.status(500).json({
+				message: 'Ошибка на сервере',
+				type: 'error',
+				data: [],
+			})
+		}
+	}
+
+	async createQuestion(req, res) {
+		try {
+			const { question, options } = req.body
+
+			const { rows } = await db.query(
+				'INSERT INTO questions (question) VALUES ($1) RETURNING *',
+				[question]
+			)
+
+			const questionId = rows[0].id_question // Get the ID of the inserted question
+
+			const answers = options.map(async option => {
+				const { number, text, isCorrect } = option
+
+				const answersResult = await db.query(
+					'INSERT INTO answers (id_question, answers) VALUES ($1, $2) RETURNING *',
+					[questionId, text]
+				)
+
+				const answerId = answersResult.rows[0].id_answers // Get the ID of the inserted answer
+
+				if (isCorrect) {
+					await db.query(
+						'INSERT INTO right_answers (id_question, id_answers) VALUES ($1, $2)',
+						[questionId, answerId]
+					)
+				}
+
+				return {
+					number,
+					text,
+					isCorrect,
+					id_answers: answerId,
+				}
+			})
+
+			const insertedAnswers = await Promise.all(answers)
+
+			res.status(201).json({
+				message: 'Вопрос успешно загружен',
+				type: 'success',
+				data: {
+					...rows[0],
+					options: insertedAnswers,
+				},
+			})
+		} catch (e) {
+			console.log(e)
+			res.status(500).json({
+				message: 'Ошибка в сервер',
+				type: 'error',
+				data: [],
+			})
+		}
+	}
 }
 
 module.exports = new EditController()

@@ -1,7 +1,12 @@
 import { toast } from 'react-toastify'
 import { useHttp } from './useHttp'
 
-const useEditQuestion = (question, id_question, selectedImage) => {
+const useEditQuestion = (
+	question,
+	id_question,
+	selectedImage,
+	image_question
+) => {
 	const { request } = useHttp()
 
 	const changeQuestionTitle = async () => {
@@ -33,14 +38,21 @@ const useEditQuestion = (question, id_question, selectedImage) => {
 		}
 	}
 
-	const handleDeleteQuestionImage = () => {
+	const deleteQuestionImage = async () => {
+		const { id_image } = image_question
 		try {
+			const { type, message } = await request(
+				`/edit/imageQuestions/delete/${id_image}`,
+				'DELETE',
+				{ id_image }
+			)
+			toast[type](message)
 		} catch (e) {
 			console.log(e)
 		}
 	}
 
-	return { changeQuestionTitle, handleSavePhoto }
+	return { changeQuestionTitle, handleSavePhoto, deleteQuestionImage }
 }
 
 export default useEditQuestion

@@ -15,6 +15,8 @@ const AnswerItem = ({ item, nextQuestion, checkAnswer, isRight, user }) => {
 		state => state.editModal.openEditAnswerModal
 	)
 
+	console.log(isRight)
+
 	const handleClick = () => {
 		dispatch(setChoseAnswer(item.id_answers))
 		checkAnswer()

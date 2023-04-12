@@ -19,18 +19,14 @@ const EditQuestionModal = ({
 	const isQuestionChanged = question !== originalQuestion
 	const { id_question } = test
 
-	console.log(image_question)
-
 	const changeTitle = e => {
 		e.preventDefault()
 		setTitle(e.target.value)
 	}
-
 	const clickCloseModal = e => {
 		e.preventDefault()
 		setOpenEditModal(false)
 	}
-
 	const handleCloseImage = () => {
 		setSelectedImage(null)
 	}
@@ -42,11 +38,8 @@ const EditQuestionModal = ({
 		setImage(imageUrl)
 	}
 
-	const { changeQuestionTitle, handleSavePhoto } = useEditQuestion(
-		question,
-		id_question,
-		selectedImage
-	)
+	const { changeQuestionTitle, handleSavePhoto, deleteQuestionImage } =
+		useEditQuestion(question, id_question, selectedImage, image_question)
 
 	const handleSaveEdits = async () => {
 		try {
@@ -67,10 +60,10 @@ const EditQuestionModal = ({
 	}
 
 	const handleDeleteQuestionImage = async () => {
+		await deleteQuestionImage()
 		setImageQuestionUrl(null)
+		await getSpecialQuestionForEdit()
 	}
-
-	console.log(selectedImage)
 
 	return (
 		<div className={styles.modal}>

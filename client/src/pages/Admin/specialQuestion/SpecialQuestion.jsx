@@ -31,6 +31,8 @@ const SpecialQuestion = () => {
 		getSpecialRightAnswer()
 	}, [])
 
+	console.log(answers)
+
 	const nextQuestion = () => {
 		console.log('adminClick')
 	}
@@ -42,6 +44,8 @@ const SpecialQuestion = () => {
 	useEffect(() => {
 		getSpecialAnswer()
 	}, [openEditAnswerModal])
+
+	console.log(rightAnswer)
 
 	return (
 		<div className={styles.SpecialQuestion}>
